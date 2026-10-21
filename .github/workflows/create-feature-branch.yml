@@ -1,0 +1,57 @@
+name: Create Feature Branch from Issue
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Generate Branch Name and Create Branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          set -euo pipefail
+
+          # 1) Normalize issue title to a safe slug
+          CLEAN_TITLE="$(echo "$ISSUE_TITLE" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's/[^a-z0-9._ -]+/-/g' \
+            | sed -E 's/[[:space:]]+/-/g' \
+            | sed -E 's/-+/-/g; s/^-+//; s/-+$//')"
+
+          # 2) Fallback if title becomes empty
+          if [ -z "$CLEAN_TITLE" ]; then
+            CLEAN_TITLE="issue"
+          fi
+
+          # 3) Limit title length
+          TRUNCATED_TITLE="$(echo "$CLEAN_TITLE" | cut -c1-40)"
+
+          # 4) Build final branch name
+          BRANCH_NAME="feature/${ISSUE_NUMBER}-${TRUNCATED_TITLE}"
+
+          echo "Target Branch Name: $BRANCH_NAME"
+
+          # 5) Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 6) Create and push branch
+          git checkout -b "$BRANCH_NAME"
+          git push origin "$BRANCH_NAME"
+
+          # 7) Comment on issue
+          gh issue comment "$ISSUE_NUMBER" --body "🚀 Automated feature branch created: \`$BRANCH_NAME\`"
