@@ -1,0 +1,98 @@
+.about-founder {
+  background: var(--manuscript);
+  padding-top: 56px;
+}
+
+.about-founder__inner {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.about-founder__media {
+  position: sticky;
+  top: 100px;
+}
+
+.about-founder__photo-frame {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-lg);
+  background: var(--manuscript-deep);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.about-founder__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-founder__caption {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.about-founder__caption-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--tbr-navy);
+}
+
+.about-founder__caption-role {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.about-founder__eyebrow {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--tbr-red);
+  margin-bottom: 10px;
+}
+
+.about-founder__content h2 {
+  font-size: clamp(1.3rem, 2.4vw, 2.2rem);
+  color: var(--tbr-navy);
+}
+
+.about-founder__telugu {
+  margin-top: 10px;
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+}
+
+.about-founder__bio {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  color: var(--ink-soft);
+  line-height: 1.75;
+  max-width: 62ch;
+}
+
+.about-founder__vision {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--tbr-navy);
+}
+
+.about-founder__content .btn {
+  margin-top: 30px;
+}
+
+@media (max-width: 860px) {
+  .about-founder__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .about-founder__media {
+    position: static;
+    max-width: 320px;
+  }
+}

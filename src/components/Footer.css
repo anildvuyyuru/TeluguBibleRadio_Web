@@ -1,0 +1,53 @@
+.site-footer {
+  background: var(--tbr-navy);
+  color: var(--cloud);
+}
+
+.site-footer__inner {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 48px;
+  align-items: start;
+  padding: 64px 24px 48px;
+}
+
+.site-footer__logo-chip {
+  display: inline-flex;
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+}
+
+.site-footer__logo-chip img {
+  height: 40px;
+  width: auto;
+}
+
+.site-footer__brand p {
+  margin-top: 20px;
+  color: var(--cloud);
+  line-height: 1.7;
+  max-width: 48ch;
+}
+
+.site-footer__brand .store-badges {
+  margin-top: 24px;
+}
+
+.site-footer__bottom {
+  border-top: 1px solid var(--line-on-dark);
+  padding: 20px 24px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--cloud);
+}
+
+.site-footer__bottom p + p {
+  margin-top: 12px;
+}
+
+@media (max-width: 760px) {
+  .site-footer__inner {
+    grid-template-columns: 1fr;
+  }
+}
