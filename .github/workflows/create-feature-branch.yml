@@ -7,36 +7,51 @@ on:
 jobs:
   create-branch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
     steps:
-      - name: Checkout main branch
+      - name: Checkout default branch
         uses: actions/checkout@v4
         with:
           ref: main
 
       - name: Generate Branch Name and Create Branch
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
-          # 1. Clean issue title: convert to lowercase, replace spaces and special chars with hyphens
-          CLEAN_TITLE=$(echo "$ISSUE_TITLE" \vert{} tr '[:upper:]' '[:lower:]' \vert{} sed -e 's/[^a-z0-9]/-/g' -e 's/-\+/-/g' -e 's/^-//' -e 's/-$//')
-          
-          # 2. Limit title length to prevent long branch names
-          TRUNCATED_TITLE=$(echo "$CLEAN_TITLE" | cut -c 1-30)
-          
-          # 3. Construct branch name (e.g., feature/1-add-user-login)
+          set -euo pipefail
+
+          # 1) Normalize issue title to a safe slug
+          CLEAN_TITLE="$(echo "$ISSUE_TITLE" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's/[^a-z0-9._ -]+/-/g' \
+            | sed -E 's/[[:space:]]+/-/g' \
+            | sed -E 's/-+/-/g; s/^-+//; s/-+$//')"
+
+          # 2) Fallback if title becomes empty
+          if [ -z "$CLEAN_TITLE" ]; then
+            CLEAN_TITLE="issue"
+          fi
+
+          # 3) Limit title length
+          TRUNCATED_TITLE="$(echo "$CLEAN_TITLE" | cut -c1-40)"
+
+          # 4) Build final branch name
           BRANCH_NAME="feature/${ISSUE_NUMBER}-${TRUNCATED_TITLE}"
-          
+
           echo "Target Branch Name: $BRANCH_NAME"
-          
-          # 4. Configure Git CLI
+
+          # 5) Configure git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # 5. Create branch and push to remote
+
+          # 6) Create and push branch
           git checkout -b "$BRANCH_NAME"
           git push origin "$BRANCH_NAME"
-          
-          # 6. Post a comment on the issue with the new branch link
-          gh issue comment "$ISSUE_NUMBER" --body "🚀 Automated Feature Branch created: \`$BRANCH_NAME\`"
+
+          # 7) Comment on issue
+          gh issue comment "$ISSUE_NUMBER" --body "🚀 Automated feature branch created: \`$BRANCH_NAME\`"
