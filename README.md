@@ -12,6 +12,10 @@ fonts; if unavailable, browser fallbacks remain usable. The existing
 
 Run `npm run dev` for local development and `npm run build` for a production build.
 
+Run `npm test` for unit tests. Tests use Vitest with jsdom and load DOM matchers
+through `@testing-library/jest-dom/vitest` in `src\setupTests.ts`. The production
+build also type-checks the test files.
+
 ## React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
