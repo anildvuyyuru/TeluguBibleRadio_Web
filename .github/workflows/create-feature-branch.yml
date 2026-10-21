@@ -1,0 +1,42 @@
+name: Create Feature Branch from Issue
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Generate Branch Name and Create Branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          # 1. Clean issue title: convert to lowercase, replace spaces and special chars with hyphens
+          CLEAN_TITLE=$(echo "$ISSUE_TITLE" \vert{} tr '[:upper:]' '[:lower:]' \vert{} sed -e 's/[^a-z0-9]/-/g' -e 's/-\+/-/g' -e 's/^-//' -e 's/-$//')
+          
+          # 2. Limit title length to prevent long branch names
+          TRUNCATED_TITLE=$(echo "$CLEAN_TITLE" | cut -c 1-30)
+          
+          # 3. Construct branch name (e.g., feature/12-add-user-login)
+          BRANCH_NAME="feature/${ISSUE_NUMBER}-${TRUNCATED_TITLE}"
+          
+          echo "Target Branch Name: $BRANCH_NAME"
+          
+          # 4. Configure Git CLI
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # 5. Create branch and push to remote
+          git checkout -b "$BRANCH_NAME"
+          git push origin "$BRANCH_NAME"
+          
+          # 6. Post a comment on the issue with the new branch link
+          gh issue comment "$ISSUE_NUMBER" --body "🚀 Automated Feature Branch created: \`$BRANCH_NAME\`"
