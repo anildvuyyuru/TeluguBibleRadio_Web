@@ -49,20 +49,20 @@ If you are developing a production application, we recommend enabling type-aware
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
 
-# Code Review Guidelines
+Run the focused tests with Node.js 24 or later:
+`node --test .github/scripts/ai-code-review.test.cjs`.
+Tests mock GitHub APIs and never request a real review. The review workflow also
+runs these tests before requesting reviews.
 
-Focus on:
+## Code Review Guidelines
 
-- Correctness bugs and unhandled edge cases
-- Security issues (injection, secrets, authz, unsafe deserialization)
-- Performance problems in hot paths
-- Missing or weak tests for new logic
+Focus on correctness bugs and unhandled edge cases, security issues (injection,
+secrets, authorization, unsafe deserialization), performance problems in hot
+paths, and missing or weak tests for new logic.
 
-Do NOT comment on:
-
-- Formatting or style (the linter handles it)
-- Minor naming preferences
-
+Do not comment on formatting, style handled by the linter, or minor naming
+preferences. Provide one short summary and inline comments **only for real
+issues**, each with severity **High / Medium / Low**.
 Output format:
 
 - One short summary comment
