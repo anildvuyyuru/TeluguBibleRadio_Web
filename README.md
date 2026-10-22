@@ -48,3 +48,22 @@ If you are developing a production application, we recommend enabling type-aware
 ```
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+
+# Code Review Guidelines
+
+Focus on:
+
+- Correctness bugs and unhandled edge cases
+- Security issues (injection, secrets, authz, unsafe deserialization)
+- Performance problems in hot paths
+- Missing or weak tests for new logic
+
+Do NOT comment on:
+
+- Formatting or style (the linter handles it)
+- Minor naming preferences
+
+Output format:
+
+- One short summary comment
+- Inline comments only for real issues, each with severity: High / Medium / Low
