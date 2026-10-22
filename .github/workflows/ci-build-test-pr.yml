@@ -1,4 +1,4 @@
-name: CI - Build, Test, and Open PR
+name: CI - Build, Test
 
 on:
   push:
@@ -33,41 +33,3 @@ jobs:
 
       - name: Run unit tests
         run: npm run test
-
-  open-pull-request:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Create pull request for HITL approval
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-
-          BASE="main"
-
-          if [ "$BRANCH" = "$BASE" ]; then
-            echo "Already on $BASE, skipping PR creation."
-            exit 0
-          fi
-
-          # Avoid opening a duplicate PR if one is already open for this branch.
-          EXISTING_PR="$(gh pr list --head "$BRANCH" --base "$BASE" --state open --json number --jq '.[0].number')"
-
-          if [ -n "$EXISTING_PR" ]; then
-            echo "Open PR #$EXISTING_PR already exists for $BRANCH -> $BASE. Skipping."
-            exit 0
-          fi
-
-          gh pr create \
-            --base "$BASE" \
-            --head "$BRANCH" \
-            --title "$BRANCH: build & tests passed, ready for review" \
-            --body "Automated PR opened after a successful build and unit test run on \`$BRANCH\`. Please review and approve to merge into \`$BASE\` (human-in-the-loop approval required)."
