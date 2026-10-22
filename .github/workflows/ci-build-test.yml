@@ -1,9 +1,8 @@
 name: CI - Build, Test
 
 on:
-  push:
-    branches:
-      - "feature/**"
+  pull_request:
+    types: [opened]
 
 concurrency:
   group: ci-${{ github.ref }}
