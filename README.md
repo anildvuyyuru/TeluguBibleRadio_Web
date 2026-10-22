@@ -1,53 +1,53 @@
-# TeluguBibleRadio_Web
-Repo for Telugu Bible Radio Website
+# Telugu Bible Radio
 
-## CI-gated Copilot code review
+The homepage uses the TBR brand identity from the AIAgents
+`.agents\skills\tbr-brand\SKILL.md` skill. Theme tokens live in `src\index.css`:
+red `#A30008` for subheadings, buttons, and ordinary links; navy `#1D2659` for
+headings and brand backgrounds; green `#0B8237` for navigation links.
 
-`.github/workflows/ai-code-review.yml` listens for completion of the workflow
-named **CI - Build, Test**. Every completion starts the review workflow for
-logging and monitoring; only a **successful** push or pull-request CI run can
-request a review.
+All text uses Source Serif 4 with Georgia and serif fallbacks. Noto Serif Telugu
+is an additional glyph fallback for Telugu text. Google Fonts supplies both web
+fonts; if unavailable, browser fallbacks remain usable. The existing
+`src\assets\TBR.png` logo is preserved without alteration.
 
-The workflow uses GitHub's native
-[Copilot review-request API](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-code-review).
-Copilot produces the review overview and inline findings; no external AI API key
-or model dependency is needed.
+Run `npm run dev` for local development and `npm run build` for a production build.
 
-### Eligibility and safeguards
+Run `npm test` for unit tests. Tests use Vitest with jsdom and load DOM matchers
+through `@testing-library/jest-dom/vitest` in `src\setupTests.ts`. The production
+build also type-checks the test files.
 
-- The PR must be open, ready for review, and target **any branch except `main`**,
-  such as `develop` or `feature/integration`. This is the PR's **base** branch,
-  not its source branch; a `feature/*` PR targeting `main` is excluded.
-- CI must have succeeded for the PR's current head commit, or its current merge
-  commit for a `pull_request` CI run. Stale CI runs cannot review newer code.
-- PRs are discovered from both the CI payload and commit associations, including
-  push-triggered CI runs with an empty PR list.
-- Pending Copilot requests and completed Copilot reviews on the same head commit
-  suppress duplicate requests on CI reruns.
-- The workflow re-fetches the PR immediately before requesting a review, checking
-  its target, head, base commit, and open/draft status again.
-- Skips are written to the Actions logs and job summary, **not PR comments**.
-- Only trusted default-branch workflow code is checked out; PR code is never
-  executed by this privileged workflow. Checkout credentials are not persisted.
+## React + TypeScript + Vite
 
-Copilot runs asynchronously after the guarded API request and publishes its own
-comments. The workflow cannot recall a review already started: avoid retargeting
-or pushing to a PR while Copilot is reviewing it. Manual Copilot requests and
-other automatic-review rules are outside this workflow's control.
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
-### Setup
+Currently, two official plugins are available:
 
-1. Merge this workflow and its scripts into the repository's default branch.
-   GitHub only triggers `workflow_run` listeners that exist there.
-2. Ensure the CI workflow exists and has the exact name **CI - Build, Test**,
-   with push or pull-request triggers covering the desired source/target
-   branches. This change does not add or alter application CI.
-3. Enable Copilot code review for the repository and ensure repository/account
-   policy and billing allow bot-requested Copilot reviews. The workflow uses
-   `GITHUB_TOKEN` with `contents: read` and `pull-requests: write`; no PAT is
-   required. API authorization or availability errors fail the Actions step.
-4. Disable independent automatic Copilot review rules if **all** automated
-   reviews must obey this CI gate and the `main` exclusion.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the Oxlint configuration
+
+If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+
+```json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "options": {
+    "typeAware": true
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
+```
+
+See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
 
 Run the focused tests with Node.js 24 or later:
 `node --test .github/scripts/ai-code-review.test.cjs`.
@@ -63,3 +63,7 @@ paths, and missing or weak tests for new logic.
 Do not comment on formatting, style handled by the linter, or minor naming
 preferences. Provide one short summary and inline comments **only for real
 issues**, each with severity **High / Medium / Low**.
+Output format:
+
+- One short summary comment
+- Inline comments only for real issues, each with severity: High / Medium / Low

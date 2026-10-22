@@ -1,0 +1,36 @@
+.bible-verse {
+  background: var(--manuscript);
+  border-left: 3px solid var(--tbr-red);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 26px 28px;
+  max-width: 360px;
+}
+
+.bible-verse__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--tbr-red);
+  margin-bottom: 12px;
+}
+
+.bible-verse blockquote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--tbr-navy);
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.bible-verse cite {
+  display: block;
+  margin-top: 10px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.bible-verse a {
+  display: block;
+}

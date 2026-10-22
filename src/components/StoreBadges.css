@@ -1,0 +1,18 @@
+.store-badges {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.store-badges img {
+  display: block;
+}
+
+/* Both local badge assets share the same 415x121 aspect ratio, so a single
+   width keeps them pixel-identical without any cropping or distortion. */
+.store-badges__img {
+  width: 150px;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
